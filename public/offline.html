@@ -63,6 +63,24 @@
     }
     .retry:hover { background: #243d75; }
   </style>
+  <script>
+    async function recoverIfOnline() {
+      if (!navigator.onLine) return;
+      try {
+        await fetch('/?connectivity-check=' + Date.now(), { cache: 'no-store' });
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map((registration) => registration.unregister()));
+        }
+        window.location.reload();
+      } catch (_) {
+        // Stay on the offline page when the browser cannot reach the app shell.
+      }
+    }
+
+    window.addEventListener('online', recoverIfOnline);
+    window.addEventListener('load', recoverIfOnline);
+  </script>
 </head>
 <body>
   <div class="card">
