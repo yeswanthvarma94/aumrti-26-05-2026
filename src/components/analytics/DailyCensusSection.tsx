@@ -20,6 +20,12 @@ interface WardRow {
   maintenance: number;
 }
 
+interface WardOption {
+  id: string;
+  name: string;
+  ward_type: string | null;
+}
+
 export const DailyCensusSection: React.FC<Props> = ({ hospitalId, hospitalName }) => {
   const today = format(new Date(), "yyyy-MM-dd");
   const startToday = today + "T00:00:00";
@@ -50,7 +56,7 @@ export const DailyCensusSection: React.FC<Props> = ({ hospitalId, hospitalName }
       ]);
 
       const beds  = bedsRes.data  || [];
-      const wards = wardsRes.data || [];
+      const wards = (wardsRes.data || []) as WardOption[];
       const wardMap = new Map(wards.map(w => [w.id, w]));
 
       // Ward stats
