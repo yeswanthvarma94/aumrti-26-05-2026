@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface HospitalContextValue {
   hospitalId: string | null;
+  userId: string | null;
   role: string | null;
   permissions: Record<string, any> | null;
   fullName: string | null;
@@ -11,6 +12,7 @@ interface HospitalContextValue {
 
 const HospitalContext = createContext<HospitalContextValue>({
   hospitalId: null,
+  userId: null,
   role: null,
   permissions: null,
   fullName: null,
