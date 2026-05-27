@@ -45,14 +45,14 @@ const ESISchemeTab: React.FC = () => {
     if (!hospitalId) return;
     setLoading(true);
 
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("patients")
       .select(`
         id, full_name, uhid, phone, insurance_id,
         admissions!admissions_patient_id_fkey(id, status, admitted_at)
       `)
       .eq("hospital_id", hospitalId)
-      .eq("patient_category" as any, "esi")
+      .eq("patient_category", "esi")
       .order("full_name");
 
     const mapped: ESIPatient[] = (data || []).map((p: any) => {
