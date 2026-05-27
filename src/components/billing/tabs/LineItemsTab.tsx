@@ -177,7 +177,7 @@ const LineItemsTab: React.FC<Props> = ({ bill, hospitalId, lineItems, loading, o
       payload.is_insurance_covered = false;
     }
 
-    const { error } = await supabase.from("bill_line_items").insert(payload);
+    const { error } = await (supabase as any).from("bill_line_items").insert(payload);
     if (error) {
       toast({ title: "Failed to add service", description: error.message, variant: "destructive" });
       return;

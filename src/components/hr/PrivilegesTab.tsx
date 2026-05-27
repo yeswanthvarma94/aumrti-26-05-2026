@@ -65,7 +65,7 @@ const reviewStatus = (due: string | null) => {
 
 const PrivilegesTab: React.FC<Props> = ({ hospitalId }) => {
   const { toast } = useToast();
-  const { userId } = useHospitalId();
+  const { userId } = useHospitalId() as any;
   const [privileges, setPrivileges] = useState<Privilege[]>([]);
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [departments, setDepartments] = useState<Department[]>([]);

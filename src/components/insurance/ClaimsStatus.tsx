@@ -529,7 +529,7 @@ const RecordTPADecisionModal: React.FC<{
     if (status === "written_off") {
       payload.denial_reason = writeOffReason || null;
     }
-    await supabase.from("insurance_claims").update(payload).eq("id", claim.id);
+    await (supabase as any).from("insurance_claims").update(payload).eq("id", claim.id);
 
     if (status === "rejected" && denialCategory && denialReason) {
       const { data: userData } = await supabase.from("users").select("hospital_id")

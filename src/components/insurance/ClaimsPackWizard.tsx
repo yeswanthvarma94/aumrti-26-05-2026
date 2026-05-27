@@ -783,21 +783,29 @@ const ClaimsPackWizard: React.FC<Props> = ({ open, onClose, onCreated }) => {
       </Dialog>
 
       {/* Attestation modal for AI narrative */}
-      {showAttestation && selected && (
-        <AIAttestationModal
-          open={showAttestation}
-          onClose={() => setShowAttestation(false)}
-          feature="discharge_summary"
-          patientId={selected.patient_id}
-          admissionId={selected.id}
-          hospitalId={hospitalId || ""}
-          suggestedContent={narrative}
-          onAccept={() => {
-            setAttested(true);
-            setShowAttestation(false);
-          }}
-        />
-      )}
+      {showAttestation && selected && (() => {
+        const AttestationAny: any = AIAttestationModal;
+        return (
+          <AttestationAny
+            open={showAttestation}
+            onClose={() => setShowAttestation(false)}
+            onDiscard={() => setShowAttestation(false)}
+            title="Discharge Summary Attestation"
+            feature="discharge_summary"
+            patientId={selected.patient_id}
+            admissionId={selected.id}
+            hospitalId={hospitalId || ""}
+            aiOutput={{}}
+            previewContent={narrative}
+            initialEditableText={narrative}
+            suggestedContent={narrative}
+            onAccept={() => {
+              setAttested(true);
+              setShowAttestation(false);
+            }}
+          />
+        );
+      })()}
     </>
   );
 };
