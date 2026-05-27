@@ -79,7 +79,7 @@ const VialSharingCard: React.FC<VialSharingCardProps> = ({ orders, hospitalId })
         patients: patients.map((p) => ({ name: p.patient, dose: p.dose, patientId: p.patientId })),
         totalDose,
         estimatedSaving: Math.round(patients.length * 0.2 * 10000),
-        recommendation: `Schedule ${patients.map((p) => p.name).join(" + ")} in ${formatWindow(windowStart)} for ${drugName}`,
+        recommendation: `Schedule ${patients.map((p) => p.patient).join(" + ")} in ${formatWindow(windowStart)} for ${drugName}`,
       });
     }
 
