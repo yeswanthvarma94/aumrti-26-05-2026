@@ -760,7 +760,7 @@ const DispensingWorkspace: React.FC<Props> = ({ hospitalId, prescription, onDisp
           size="sm"
           className="h-10 px-6 text-xs font-bold"
           disabled={!canDispenseAll}
-          onClick={handleDispenseAll}
+          onClick={() => handleDispenseAll()}
         >
           {dispensing ? (
             <><Loader2 size={14} className="mr-1 animate-spin" /> Processing...</>
