@@ -221,7 +221,7 @@ const DrugReturnModal: React.FC<Props> = ({
 
           const newBalance = Number(lastNdps?.balance_after ?? 0) + l.qty;
 
-          await supabase.from("ndps_register").insert({
+          await (supabase as any).from("ndps_register").insert({
             hospital_id:           hospitalId,
             drug_id:               item.drug_id,
             drug_name:             item.drug_name,

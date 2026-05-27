@@ -75,7 +75,7 @@ const OTCaseWorkspace: React.FC<Props> = ({ schedule, hospitalId, onRefresh }) =
   const markPacAndConfirm = async () => {
     if (!schedule) return;
     setMarkingPac(true);
-    const { error } = await supabase
+    const { error } = await (supabase as any)
       .from("ot_schedules")
       .update({ pac_done: true, pac_cleared: true, pac_done_at: new Date().toISOString(), pac_notes: pacNotes || null })
       .eq("id", schedule.id);

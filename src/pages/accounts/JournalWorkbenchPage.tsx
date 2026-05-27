@@ -112,7 +112,7 @@ export default function JournalWorkbenchPage() {
       setSaving(false);
       return;
     }
-    await supabase.from("journal_line_items").insert(validLines.map(l => ({
+    await (supabase as any).from("journal_line_items").insert(validLines.map(l => ({
       hospital_id: hospitalId,
       journal_entry_id: je.id,
       account_id: l.account_id,

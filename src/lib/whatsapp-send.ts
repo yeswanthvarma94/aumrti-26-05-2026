@@ -144,15 +144,16 @@ export async function shouldAutoSend(hospitalId: string, triggerEvent: string): 
 
   if (!hospital?.wati_api_url || !hospital?.whatsapp_enabled) return false;
 
-  const { data: template } = await supabase
+  const { data: template } = await (supabase as any)
     .from("whatsapp_templates")
     .select("auto_send, is_active, wati_template_name")
     .eq("hospital_id", hospitalId)
     .eq("trigger_event", triggerEvent)
     .maybeSingle();
 
-  if (template?.is_active && template?.auto_send) {
-    return template.wati_template_name || triggerEvent;
+  const t = template as any;
+  if (t?.is_active && t?.auto_send) {
+    return t.wati_template_name || triggerEvent;
   }
   return false;
 }

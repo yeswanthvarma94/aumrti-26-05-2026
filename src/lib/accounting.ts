@@ -38,7 +38,7 @@ export const autoPostJournalEntry = async (data: PostingData) => {
 
     // 2. Generate entry number
     const year = new Date().getFullYear();
-    const { data: seqData } = await supabase.rpc("next_seq", { p_hospital_id: data.hospitalId, p_type: "journal" });
+    const { data: seqData } = await (supabase as any).rpc("next_seq", { p_hospital_id: data.hospitalId, p_type: "journal" });
     // If next_seq returns null the DB trigger has already handled this bill — skip.
     if (seqData == null) return null;
     const entryNumber = `JE-${year}-${String(seqData).padStart(4, "0")}`;
@@ -147,7 +147,7 @@ export const postManualExpenseJournal = async (data: {
     if (!debitAcct || !creditAcct) return null;
 
     const year = new Date().getFullYear();
-    const { data: seqData2 } = await supabase.rpc("next_seq", { p_hospital_id: data.hospitalId, p_type: "journal" });
+    const { data: seqData2 } = await (supabase as any).rpc("next_seq", { p_hospital_id: data.hospitalId, p_type: "journal" });
     if (seqData2 == null) return null;
     const entryNumber = `JE-${year}-${String(seqData2).padStart(4, "0")}`;
 

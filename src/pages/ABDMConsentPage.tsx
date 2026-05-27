@@ -98,7 +98,7 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
 
   const fetchConsents = useCallback(async () => {
     setLoading(true);
-    let q = supabase
+    let q = (supabase as any)
       .from("abdm_consents")
       .select("id, consent_id, patient_id, requester_name, purpose_code, purpose_text, hi_types, date_range_from, date_range_to, expiry, status, granted_at, created_at")
       .eq("hospital_id", hospitalId)
@@ -117,11 +117,12 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
     setRevoking(consent.id);
     try {
       // Get token + base URL for gateway call
-      const { data: cfg } = await supabase
+      const { data: cfgRaw } = await (supabase as any)
         .from("hospital_abdm_config")
         .select("abdm_access_token, abdm_base_url, is_production")
         .eq("hospital_id", hospitalId)
         .maybeSingle();
+      const cfg = cfgRaw as any;
 
       if (!cfg?.abdm_access_token) throw new Error("No ABDM token. Refresh config.");
 
@@ -131,7 +132,7 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
         body: JSON.stringify({ consentId: consent.consent_id }),
       });
 
-      await supabase.from("abdm_consents").update({ status: "REVOKED", updated_at: new Date().toISOString() }).eq("id", consent.id);
+      await (supabase as any).from("abdm_consents").update({ status: "REVOKED", updated_at: new Date().toISOString() }).eq("id", consent.id);
       toast({ title: "Consent revoked" });
       await fetchConsents();
     } catch (err) {
@@ -234,7 +235,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
   const fetchContexts = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("abdm_care_contexts")
       .select("id, patient_id, reference, display, context_type, link_status, linked_at, created_at")
       .eq("hospital_id", hospitalId)
@@ -249,7 +250,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
   const handleRetry = async (ctx: CareContext) => {
     setRetrying(ctx.id);
     try {
-      const { error } = await supabase.functions.invoke("abdm-hip-link-init", {
+      const { error } = await (supabase as any).functions.invoke("abdm-hip-link-init", {
         body: { hospital_id: hospitalId, patient_id: ctx.patient_id, care_context_ids: [ctx.id] },
       });
       if (error) throw error;
@@ -272,7 +273,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
     }, {});
     for (const [patientId, ctxs] of Object.entries(byPatient)) {
       try {
-        await supabase.functions.invoke("abdm-hip-link-init", {
+        await (supabase as any).functions.invoke("abdm-hip-link-init", {
           body: { hospital_id: hospitalId, patient_id: patientId, care_context_ids: ctxs.map(c => c.id) },
         });
         succeeded++;
@@ -370,7 +371,7 @@ const GatewayLogsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("abdm_gateway_logs")
       .select("id, action, direction, request_payload, response_payload, status, created_at")
       .eq("hospital_id", hospitalId)
@@ -471,7 +472,7 @@ const HIUFetchTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
     setSubmitting(true);
     try {
-      const { data: cfg } = await supabase
+      const { data: cfg } = await (supabase as any)
         .from("hospital_abdm_config")
         .select("abdm_access_token, abdm_base_url, hfr_id, is_production")
         .eq("hospital_id", hospitalId)
@@ -512,7 +513,7 @@ const HIUFetchTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
       }
 
       // Store consent record
-      await supabase.from("abdm_consents").insert({
+      await (supabase as any).from("abdm_consents").insert({
         hospital_id: hospitalId,
         requester_name: patientName || "Hospital",
         purpose_code: purpose,

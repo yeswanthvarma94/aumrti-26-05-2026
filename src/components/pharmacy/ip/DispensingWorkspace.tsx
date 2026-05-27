@@ -361,7 +361,7 @@ const DispensingWorkspace: React.FC<Props> = ({ hospitalId, prescription, onDisp
 
           const balance = (lastEntry?.balance_after || 0) - row.dispense_qty;
 
-          await supabase
+          await (supabase as any)
             .from("ndps_register")
             .insert({
               hospital_id:         hospitalId,
@@ -760,7 +760,7 @@ const DispensingWorkspace: React.FC<Props> = ({ hospitalId, prescription, onDisp
           size="sm"
           className="h-10 px-6 text-xs font-bold"
           disabled={!canDispenseAll}
-          onClick={handleDispenseAll}
+          onClick={() => handleDispenseAll()}
         >
           {dispensing ? (
             <><Loader2 size={14} className="mr-1 animate-spin" /> Processing...</>

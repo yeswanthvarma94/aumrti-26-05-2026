@@ -159,7 +159,7 @@ const PatientRegistrationModal: React.FC<Props> = ({ onClose, onSuccess, editPat
     }
 
     // INSERT new patient — atomic UHID via next_seq RPC (prevents race conditions)
-    const { data: seqVal, error: seqErr } = await supabase.rpc("next_seq", {
+    const { data: seqVal, error: seqErr } = await (supabase as any).rpc("next_seq", {
       p_hospital_id: hospitalId,
       p_type: "uhid",
     });
