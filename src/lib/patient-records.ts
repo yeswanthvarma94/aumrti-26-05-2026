@@ -19,7 +19,7 @@ export const calculateDobFromAge = (age?: number | null) => {
 
 export async function generatePatientUhid(hospitalId: string) {
   const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-  const { data, error } = await supabase.rpc("next_seq", { p_hospital_id: hospitalId, p_type: "uhid" });
+  const { data, error } = await (supabase as any).rpc("next_seq", { p_hospital_id: hospitalId, p_type: "uhid" });
   if (error) throw error;
   const seq = String(data ?? 1).padStart(4, "0");
   return `UHID-${dateStr}-${seq}`;

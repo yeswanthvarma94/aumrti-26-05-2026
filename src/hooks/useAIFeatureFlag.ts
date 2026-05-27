@@ -43,7 +43,7 @@ export function useAIFeatureFlag(feature: AIFeature): boolean {
         .eq("id", hospitalId)
         .maybeSingle();
 
-      const flags = (data?.ai_feature_flags as Record<string, boolean>) ?? {};
+      const flags = ((data as any)?.ai_feature_flags as Record<string, boolean>) ?? {};
       cachedFlags = flags;
       cacheHospitalId = hospitalId;
       setEnabled(flags[feature] ?? DEFAULTS[feature]);

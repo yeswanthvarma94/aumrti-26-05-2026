@@ -361,7 +361,7 @@ const DispensingWorkspace: React.FC<Props> = ({ hospitalId, prescription, onDisp
 
           const balance = (lastEntry?.balance_after || 0) - row.dispense_qty;
 
-          await supabase
+          await (supabase as any)
             .from("ndps_register")
             .insert({
               hospital_id:         hospitalId,

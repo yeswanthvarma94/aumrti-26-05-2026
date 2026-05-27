@@ -57,8 +57,7 @@ status must be one of: compliant, partial, non_compliant`;
       featureKey: "nabh_criteria_mapper",
       hospitalId,
       prompt,
-      outputFormat: "json",
-    });
+    } as any);
 
     if (!response) return null;
     const text = typeof response === "string" ? response : JSON.stringify(response);

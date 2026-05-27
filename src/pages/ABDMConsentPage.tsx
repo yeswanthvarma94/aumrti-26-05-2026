@@ -98,7 +98,7 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
 
   const fetchConsents = useCallback(async () => {
     setLoading(true);
-    let q = supabase
+    let q = (supabase as any)
       .from("abdm_consents")
       .select("id, consent_id, patient_id, requester_name, purpose_code, purpose_text, hi_types, date_range_from, date_range_to, expiry, status, granted_at, created_at")
       .eq("hospital_id", hospitalId)
@@ -117,11 +117,12 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
     setRevoking(consent.id);
     try {
       // Get token + base URL for gateway call
-      const { data: cfg } = await supabase
+      const { data: cfgRaw } = await (supabase as any)
         .from("hospital_abdm_config")
         .select("abdm_access_token, abdm_base_url, is_production")
         .eq("hospital_id", hospitalId)
         .maybeSingle();
+      const cfg = cfgRaw as any;
 
       if (!cfg?.abdm_access_token) throw new Error("No ABDM token. Refresh config.");
 
@@ -131,7 +132,7 @@ const ActiveConsentsTab: React.FC<{ hospitalId: string; role: string }> = ({ hos
         body: JSON.stringify({ consentId: consent.consent_id }),
       });
 
-      await supabase.from("abdm_consents").update({ status: "REVOKED", updated_at: new Date().toISOString() }).eq("id", consent.id);
+      await (supabase as any).from("abdm_consents").update({ status: "REVOKED", updated_at: new Date().toISOString() }).eq("id", consent.id);
       toast({ title: "Consent revoked" });
       await fetchConsents();
     } catch (err) {
