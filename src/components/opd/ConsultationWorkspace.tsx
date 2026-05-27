@@ -114,6 +114,8 @@ const ConsultationWorkspace: React.FC<Props> = ({ token, hospitalId, userId, onT
   const radStudyNamesRef = useRef<Set<string>>(new Set());
   const [deptName, setDeptName] = useState<string | null>(null);
   const [showAdmitModal, setShowAdmitModal] = useState(false);
+  const [showLabModal, setShowLabModal] = useState(false);
+  const [showRadiologyModal, setShowRadiologyModal] = useState(false);
   const [showReferralModal, setShowReferralModal] = useState(false);
   const [hospitalInfo, setHospitalInfo] = useState<any>(null);
 
