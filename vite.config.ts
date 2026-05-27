@@ -55,7 +55,9 @@ export default defineConfig(({ mode }) => ({
             },
           },
         ],
-        navigateFallback: "/offline.html",
+        // SPA routes must always fall back to the app shell. Using offline.html here
+        // makes valid routes like /opd render the offline screen while online.
+        navigateFallback: "/index.html",
         navigateFallbackDenylist: [/^\/fhir\//, /^\/api\//],
         cleanupOutdatedCaches: true,
       },

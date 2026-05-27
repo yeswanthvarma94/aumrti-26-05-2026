@@ -30,7 +30,7 @@ import ObstetricSheet from "@/components/specialty/ObstetricSheet";
 import NeonatalSheet from "@/components/specialty/NeonatalSheet";
 import AnaesthesiaSheet from "@/components/specialty/AnaesthesiaSheet";
 import OphthalmologySheet from "@/components/specialty/OphthalmologySheet";
-import { AlertTriangle, FlaskConical, ScanLine, Pill, Microphone, ClipboardList, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, FlaskConical, ScanLine, Pill, ClipboardList, CheckCircle2 } from "lucide-react";
 import { getNEWS2BadgeClasses, getNEWS2Level } from "@/lib/news2";
 import ABDMCareContextsPanel from "@/components/abdm/ABDMCareContextsPanel";
 import ConsentStatusBanner from "@/components/abdm/ConsentStatusBanner";
@@ -210,7 +210,7 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
       const labOrders: LabOrder[] = [];
       const radOrders: RadiologyOrder[] = [];
       ((data.investigations as string[]) || []).forEach((name) => {
-        if (isRadiology(name)) radOrders.push({ test_name: name, urgency: "routine", clinical_indication: "" });
+        if (isRadiology(name)) radOrders.push({ study_name: name, urgency: "routine", clinical_indication: "" });
         else labOrders.push({ test_name: name, urgency: "routine", clinical_indication: "" });
       });
 
@@ -460,17 +460,18 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
 
       if (hasLabs) {
         const { data: masterTests } = await supabase.from("lab_test_master")
-          .select("id, test_name, fee, gst_percent")
+          .select("id, test_name, fee")
           .eq("hospital_id", hospitalId)
           .in("test_name", prescription.lab_orders.map(l => l.test_name));
+        const labMasters = (masterTests || []).map((test) => ({ ...test, gst_percent: 0 }));
 
         const created = await syncLabOrders({
           hospitalId, patientId: patient.id, orderedBy: userId, admissionId, items: prescription.lab_orders
         });
 
         if (created > 0) {
-          const subtotal = (masterTests || []).reduce((sum, t) => sum + Number(t.fee || 0), 0);
-          const gstTotal = (masterTests || []).reduce((sum, t) => sum + (Number(t.fee || 0) * (Number(t.gst_percent || 0) / 100)), 0);
+          const subtotal = labMasters.reduce((sum, t) => sum + Number(t.fee || 0), 0);
+          const gstTotal = labMasters.reduce((sum, t) => sum + (Number(t.fee || 0) * (Number(t.gst_percent || 0) / 100)), 0);
           const totalAmount = subtotal + gstTotal;
 
           if (totalAmount > 0) {
@@ -484,7 +485,7 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
             }).select("id").maybeSingle();
 
             if (bill) {
-              await supabase.from("bill_line_items").insert((masterTests || []).map(t => ({
+              await supabase.from("bill_line_items").insert(labMasters.map(t => ({
                 hospital_id: hospitalId, bill_id: bill.id,
                 description: `Lab: ${t.test_name}`, item_type: "lab",
                 quantity: 1, unit_rate: t.fee, taxable_amount: t.fee,
@@ -504,7 +505,7 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
       }
 
       if (hasRads) {
-        const { data: masterStudies } = await supabase.from("radiology_study_master")
+        const { data: masterStudies } = await (supabase as any).from("radiology_study_master")
           .select("study_name, fee, gst_percent")
           .eq("hospital_id", hospitalId)
           .in("study_name", prescription.radiology_orders.map(r => r.study_name));
@@ -514,8 +515,9 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
         });
 
         if (created > 0) {
-          const subtotal = (masterStudies || []).reduce((sum, s) => sum + Number(s.fee || 0), 0);
-          const gstTotal = (masterStudies || []).reduce((sum, s) => sum + (Number(s.fee || 0) * (Number(s.gst_percent || 0) / 100)), 0);
+          const radiologyMasters = (masterStudies || []) as Array<{ study_name: string; fee: number | null; gst_percent: number | null }>;
+          const subtotal = radiologyMasters.reduce((sum, s) => sum + Number(s.fee || 0), 0);
+          const gstTotal = radiologyMasters.reduce((sum, s) => sum + (Number(s.fee || 0) * (Number(s.gst_percent || 0) / 100)), 0);
           const totalAmount = subtotal + gstTotal;
 
           if (totalAmount > 0) {
@@ -529,7 +531,7 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
             }).select("id").maybeSingle();
 
             if (bill) {
-              await supabase.from("bill_line_items").insert((masterStudies || []).map(s => ({
+              await supabase.from("bill_line_items").insert(radiologyMasters.map(s => ({
                 hospital_id: hospitalId, bill_id: bill.id,
                 description: `Rad: ${s.study_name}`, item_type: "radiology",
                 quantity: 1, unit_rate: s.fee, taxable_amount: s.fee,
@@ -789,7 +791,7 @@ const IPDWorkspace: React.FC<Props> = ({ bed, hospitalId, userId, onRefresh }) =
           <Button size="sm" onClick={() => setActiveTab("wardround")} className="bg-slate-100 text-slate-700 hover:bg-slate-200 text-xs h-8">
             📝 Ward Round
           </Button>
-          <VoiceDictationButton sessionType="ipd_workspace" size="sm" />
+          <VoiceDictationButton sessionType="ward_round" size="sm" />
           <Button size="sm" variant="outline" onClick={() => setActiveTab("medications")} className="text-xs h-8">
             💊 Add Medication
           </Button>

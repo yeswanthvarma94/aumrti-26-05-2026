@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
+import NABHBadge from "@/components/nabh/NABHBadge";
 import type { BedData } from "@/pages/ipd/IPDPage";
 
 interface Props {
