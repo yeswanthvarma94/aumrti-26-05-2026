@@ -107,11 +107,11 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
       }
     };
 
-    const fetchAndApply = async (userId: string) => {
+    const fetchAndApply = async (authUserId: string) => {
       const { data: userData, error: userError } = await supabase
         .from("users")
-        .select("hospital_id, role, full_name")
-        .eq("auth_user_id", userId)
+        .select("id, hospital_id, role, full_name")
+        .eq("auth_user_id", authUserId)
         .maybeSingle();
 
       if (userError) {
@@ -126,6 +126,7 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
       }
 
       setHospitalId(userData.hospital_id);
+      setUserId((userData as any).id ?? null);
       setRole(userData.role);
       setFullName((userData as any).full_name ?? null);
 
@@ -145,8 +146,9 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
       resolvedRef.current = true;
       setLoading(false);
 
-      writeCache(userId, {
+      writeCache(authUserId, {
         hospitalId: userData.hospital_id,
+        userId: (userData as any).id ?? null,
         role: userData.role,
         permissions: perms,
         fullName: (userData as any).full_name ?? null,
@@ -155,12 +157,12 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
     };
 
     // Silently re-fetches from Supabase without touching loading state.
-    const refreshInBackground = async (userId: string) => {
+    const refreshInBackground = async (authUserId: string) => {
       try {
         const { data: userData } = await supabase
           .from("users")
-          .select("hospital_id, role, full_name")
-          .eq("auth_user_id", userId)
+          .select("id, hospital_id, role, full_name")
+          .eq("auth_user_id", authUserId)
           .maybeSingle();
 
         if (!userData) return;
@@ -175,12 +177,14 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
         const perms = (permsData?.permissions as Record<string, any>) || null;
 
         setHospitalId(userData.hospital_id);
+        setUserId((userData as any).id ?? null);
         setRole(userData.role);
         setFullName((userData as any).full_name ?? null);
         setPermissions(perms);
 
-        writeCache(userId, {
+        writeCache(authUserId, {
           hospitalId: userData.hospital_id,
+          userId: (userData as any).id ?? null,
           role: userData.role,
           permissions: perms,
           fullName: (userData as any).full_name ?? null,
