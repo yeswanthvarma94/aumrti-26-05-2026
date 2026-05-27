@@ -89,6 +89,7 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
         const cached = readCache(user.id);
         if (cached) {
           setHospitalId(cached.hospitalId);
+          setUserId(cached.userId);
           setRole(cached.role);
           setPermissions(cached.permissions);
           setFullName(cached.fullName);
