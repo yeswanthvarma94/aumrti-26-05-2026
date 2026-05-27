@@ -53,6 +53,7 @@ function clearCache() {
 
 export const HospitalProvider = ({ children }: { children: React.ReactNode }) => {
   const [hospitalId, setHospitalId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [permissions, setPermissions] = useState<Record<string, any> | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
