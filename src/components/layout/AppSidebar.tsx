@@ -80,12 +80,12 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isMobileOverlay, onClose }) => 
 
   useEffect(() => {
     if (hospitalId) {
-      supabase
+      (supabase as any)
         .from("abdm_consents")
         .select("id", { count: "exact", head: true })
         .eq("hospital_id", hospitalId)
         .eq("status", "REQUESTED")
-        .then(({ count }) => setPendingConsentCount(count ?? 0));
+        .then(({ count }: any) => setPendingConsentCount(count ?? 0));
     }
   }, [hospitalId]);
 
