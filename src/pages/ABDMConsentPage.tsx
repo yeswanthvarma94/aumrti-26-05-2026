@@ -235,7 +235,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
   const fetchContexts = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("abdm_care_contexts")
       .select("id, patient_id, reference, display, context_type, link_status, linked_at, created_at")
       .eq("hospital_id", hospitalId)
@@ -371,7 +371,7 @@ const GatewayLogsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
   const fetchLogs = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data } = await (supabase as any)
       .from("abdm_gateway_logs")
       .select("id, action, direction, request_payload, response_payload, status, created_at")
       .eq("hospital_id", hospitalId)
@@ -472,7 +472,7 @@ const HIUFetchTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
 
     setSubmitting(true);
     try {
-      const { data: cfg } = await supabase
+      const { data: cfg } = await (supabase as any)
         .from("hospital_abdm_config")
         .select("abdm_access_token, abdm_base_url, hfr_id, is_production")
         .eq("hospital_id", hospitalId)
