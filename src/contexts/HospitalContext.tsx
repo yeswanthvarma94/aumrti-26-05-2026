@@ -222,8 +222,8 @@ export const HospitalProvider = ({ children }: { children: React.ReactNode }) =>
   }, []);
 
   const value = React.useMemo(
-    () => ({ hospitalId, role, permissions, fullName, loading }),
-    [hospitalId, role, permissions, fullName, loading]
+    () => ({ hospitalId, userId, role, permissions, fullName, loading }),
+    [hospitalId, userId, role, permissions, fullName, loading]
   );
 
   return (
