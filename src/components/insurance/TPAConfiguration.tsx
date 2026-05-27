@@ -69,7 +69,22 @@ const TPAConfiguration: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     const { data } = await supabase.from("tpa_config").select("*").order("tpa_name");
-    setTpas((data || []) as TPA[]);
+    setTpas(((data || []) as unknown as Partial<TPA>[]).map((tpa) => ({
+      id: tpa.id || "",
+      tpa_name: tpa.tpa_name || "",
+      tpa_code: tpa.tpa_code || null,
+      coordinator_name: tpa.coordinator_name || null,
+      coordinator_phone: tpa.coordinator_phone || null,
+      claims_email: tpa.claims_email || null,
+      credit_days: tpa.credit_days || 45,
+      submission_method: tpa.submission_method || "portal",
+      required_documents: tpa.required_documents || [],
+      is_active: tpa.is_active ?? true,
+      room_rent_ceiling: Number(tpa.room_rent_ceiling ?? 0),
+      co_payment_type: tpa.co_payment_type || "none",
+      co_payment_value: Number(tpa.co_payment_value ?? 0),
+      deductible: Number(tpa.deductible ?? 0),
+    })));
     setLoading(false);
   };
 
