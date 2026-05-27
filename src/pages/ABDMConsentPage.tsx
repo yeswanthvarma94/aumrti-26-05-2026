@@ -250,7 +250,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
   const handleRetry = async (ctx: CareContext) => {
     setRetrying(ctx.id);
     try {
-      const { error } = await supabase.functions.invoke("abdm-hip-link-init", {
+      const { error } = await (supabase as any).functions.invoke("abdm-hip-link-init", {
         body: { hospital_id: hospitalId, patient_id: ctx.patient_id, care_context_ids: [ctx.id] },
       });
       if (error) throw error;
@@ -273,7 +273,7 @@ const CareContextsTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
     }, {});
     for (const [patientId, ctxs] of Object.entries(byPatient)) {
       try {
-        await supabase.functions.invoke("abdm-hip-link-init", {
+        await (supabase as any).functions.invoke("abdm-hip-link-init", {
           body: { hospital_id: hospitalId, patient_id: patientId, care_context_ids: ctxs.map(c => c.id) },
         });
         succeeded++;
@@ -513,7 +513,7 @@ const HIUFetchTab: React.FC<{ hospitalId: string }> = ({ hospitalId }) => {
       }
 
       // Store consent record
-      await supabase.from("abdm_consents").insert({
+      await (supabase as any).from("abdm_consents").insert({
         hospital_id: hospitalId,
         requester_name: patientName || "Hospital",
         purpose_code: purpose,
