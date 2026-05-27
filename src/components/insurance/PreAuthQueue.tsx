@@ -270,8 +270,12 @@ const PreAuthQueue: React.FC<Props> = ({ initialAdmission, onAdmissionHandled })
     } else {
       setPreAuths([]);
     }
-    setTpas((tpaRes.data || []).map(t => ({
+    setTpas(((tpaRes.data || []) as unknown as Partial<TPAConfig>[]).map(t => ({
       ...t,
+      id: t.id || "",
+      tpa_name: t.tpa_name || "",
+      tpa_code: t.tpa_code || "",
+      required_documents: t.required_documents || [],
       room_rent_ceiling: Number((t as any).room_rent_ceiling ?? 0),
       co_payment_type: (t as any).co_payment_type ?? "none",
       co_payment_value: Number((t as any).co_payment_value ?? 0),
