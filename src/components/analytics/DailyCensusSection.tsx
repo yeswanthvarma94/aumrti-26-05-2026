@@ -33,7 +33,7 @@ export const DailyCensusSection: React.FC<Props> = ({ hospitalId, hospitalName }
           .select("id, status, ward_id")
           .eq("hospital_id", hospitalId)
           .eq("is_active", true),
-        supabase.from("wards")
+        (supabase as any).from("wards")
           .select("id, name, ward_type")
           .eq("hospital_id", hospitalId)
           .eq("is_active", true),

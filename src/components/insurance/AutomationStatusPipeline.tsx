@@ -167,7 +167,7 @@ const AutomationStatusPipeline: React.FC = () => {
     setLoading(true);
 
     // Fetch insurance admissions
-    const admQuery = supabase
+    const admQuery = (supabase as any)
       .from("admissions")
       .select("id, insurance_type, tpa_name, admitted_at, discharged_at, status, patients(full_name, uhid)")
       .eq("hospital_id", hospitalId)
@@ -190,7 +190,7 @@ const AutomationStatusPipeline: React.FC = () => {
         .select("admission_id, id, status, intimation_sent_at, is_emergency_admission, ai_pre_auth_generated, automation_mode, submitted_at, valid_until")
         .in("admission_id", admissionIds)
         .order("created_at", { ascending: false }),
-      supabase
+      (supabase as any)
         .from("insurance_claims")
         .select("id, claimed_amount, settled_amount, status, submitted_at, automation_submitted, ai_denial_risk_score")
         .in("status", ["draft", "submitted", "under_review", "approved", "partially_approved", "rejected", "settled"])

@@ -70,7 +70,7 @@ const ABDMCareContextsPanel: React.FC<Props> = ({ patientId, hospitalId, classNa
 
   const fetchContexts = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("abdm_care_contexts")
       .select("id, reference, display, context_type, link_status, linked_at, created_at, source_id")
       .eq("patient_id", patientId)

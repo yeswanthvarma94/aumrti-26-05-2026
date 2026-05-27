@@ -26,18 +26,19 @@ const ConsentStatusBanner: React.FC<Props> = ({ patientId, className }) => {
     if (!patientId) return;
 
     const load = async () => {
+      const sb = supabase as any;
       const [profileRes, contextsRes, consentsRes] = await Promise.all([
-        supabase
+        sb
           .from("patient_abha_profiles")
           .select("abha_address, abha_number")
           .eq("patient_id", patientId)
           .eq("is_active", true)
           .maybeSingle(),
-        supabase
+        sb
           .from("abdm_care_contexts")
           .select("link_status, linked_at")
           .eq("patient_id", patientId),
-        supabase
+        sb
           .from("abdm_consents")
           .select("id", { count: "exact", head: true })
           .eq("patient_id", patientId)
@@ -50,10 +51,10 @@ const ConsentStatusBanner: React.FC<Props> = ({ patientId, className }) => {
         return;
       }
 
-      const ctxs = contextsRes.data ?? [];
-      const linked = ctxs.filter(c => c.link_status === "linked");
+      const ctxs = (contextsRes.data ?? []) as Array<{ link_status: string | null; linked_at: string | null }>;
+      const linked = ctxs.filter((c) => c.link_status === "linked");
       const lastLinkedAt = linked
-        .map(c => c.linked_at)
+        .map((c) => c.linked_at)
         .filter(Boolean)
         .sort()
         .at(-1) ?? null;

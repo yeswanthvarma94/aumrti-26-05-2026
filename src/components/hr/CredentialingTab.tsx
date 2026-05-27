@@ -78,7 +78,7 @@ const EMPTY_FORM = {
 
 const CredentialingTab: React.FC<Props> = ({ hospitalId }) => {
   const { toast } = useToast();
-  const { userId } = useHospitalId();
+  const { userId } = useHospitalId() as any;
   const [credentials, setCredentials] = useState<Credential[]>([]);
   const [staff, setStaff] = useState<{ id: string; full_name: string }[]>([]);
   const [loading, setLoading] = useState(true);
@@ -320,7 +320,7 @@ const CredentialingTab: React.FC<Props> = ({ hospitalId }) => {
                       <span className="text-sm font-medium">{c.user_name || "—"}</span>
                       <span className="text-[10px] text-muted-foreground">·</span>
                       <span className="text-xs text-muted-foreground">{typeLabel}</span>
-                      {c.verified && <CheckCircle className="h-3.5 w-3.5 text-emerald-600 shrink-0" title={`Verified${c.verifier_name ? ` by ${c.verifier_name}` : ""}${c.verified_at ? ` on ${new Date(c.verified_at).toLocaleDateString("en-IN")}` : ""}`} />}
+                      {c.verified && <span title={`Verified${c.verifier_name ? ` by ${c.verifier_name}` : ""}${c.verified_at ? ` on ${new Date(c.verified_at).toLocaleDateString("en-IN")}` : ""}`}><CheckCircle className="h-3.5 w-3.5 text-emerald-600 shrink-0" /></span>}
                     </div>
                     {c.name && <p className="text-xs text-foreground">{c.name}</p>}
                     <div className="flex items-center gap-3 flex-wrap">

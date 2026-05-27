@@ -225,7 +225,7 @@ const CollectionsTab: React.FC<CollectionsTabProps> = ({ hospitalId }) => {
           bill_id: payLinkModal.id,
           amount: payLinkAmount,
           patient_name: payLinkModal.patient_name,
-          phone: payLinkModal.phone || null,
+          phone: (payLinkModal as any).phone || null,
           hospital_id: hospitalId,
         },
       });
